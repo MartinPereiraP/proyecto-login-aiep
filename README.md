@@ -13,11 +13,14 @@
 ```php
 ├-- app/
 |       ├-- Controllers/
+|       |       └-- Controller.php (Base Controller)
 |       ├-- Models/
+|       |       └-- Model.php (Base Model)
 |       └-- Traits/
 ├-- config/
 |       └-- database.php
 ├-- .gitignore
 ├-- composer.json
 ├-- package.json
+└-- README.md
 ```
