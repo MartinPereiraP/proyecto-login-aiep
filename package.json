@@ -1,0 +1,11 @@
+{
+  "name": "login",
+  "version": "1.0.0",
+  "description": "- Conectar a la base de datos usna - usar github - crear login y validaciones - en el nav se debe crear un boton login y register a la derecha del nav tarea para el sabado - cambiar datos al navbar",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,15 @@
+{
+  "name": "martinpereira/login",
+  "autoload": {
+    "psr-4": {
+      "Martinpereira\\Login\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Martin Pereira",
+      "email": "martinpereirap@gmail.com"
+    }
+  ],
+  "require": {}
+}
