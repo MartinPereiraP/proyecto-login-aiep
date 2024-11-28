@@ -1,8 +1,8 @@
 {
-  "name": "martinpereira/login",
+  "name": "martinpereira/proyecto-login-php-aiep",
   "autoload": {
     "psr-4": {
-      "Martinpereira\\Login\\": "src/"
+      "App\\": "app/"
     }
   },
   "authors": [
@@ -11,5 +11,7 @@
       "email": "martinpereirap@gmail.com"
     }
   ],
-  "require": {}
+  "require": {
+    "php": "*"
+  }
 }

@@ -1,11 +1,27 @@
 {
-  "name": "login",
+  "name": "proyecto-login-php-aiep",
   "version": "1.0.0",
   "description": "- Conectar a la base de datos usna - usar github - crear login y validaciones - en el nav se debe crear un boton login y register a la derecha del nav tarea para el sabado - cambiar datos al navbar",
   "main": "index.js",
+  "directories": {
+    "app": "app"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC"
+  "keywords": [
+    "php",
+    "mvc",
+    "login",
+    "poo",
+    "bootstrap",
+    "html",
+    "css",
+    "js"
+  ],
+  "author": "Martin Pereira",
+  "license": "ISC",
+  "dependencies": {
+    "bootstrap": "^5.3.3"
+  }
 }

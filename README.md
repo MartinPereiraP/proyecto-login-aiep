@@ -2,7 +2,7 @@
 
 ## Modulo Programación Segura
 
-## [GitHub](app/Models/ActivityLog.php)
+## [GitHub](https://github.com/MartinPereiraP/proyecto-login-aiep.git)
 
 - Conectar a la base de datos usna
 - usar github
