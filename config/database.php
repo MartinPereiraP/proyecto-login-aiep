@@ -1,4 +1,5 @@
 <?php
+// config/database.php
 
 return [
   'driver'    => $_ENV['DB_CONNECTION'],
