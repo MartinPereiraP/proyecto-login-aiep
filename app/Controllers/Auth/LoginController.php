@@ -12,4 +12,10 @@ class LoginController extends Controller
             'title' => 'Login'
         ]);
     }
+
+    public function authenticate()
+    {
+        // Implementar la autenticación
+
+    }
 }
