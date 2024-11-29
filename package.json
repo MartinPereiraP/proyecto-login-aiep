@@ -7,7 +7,12 @@
     "app": "app"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "copy-bootstrap": "cp node_modules/bootstrap/dist/css/bootstrap.min.css public/assets/css/ && cp node_modules/bootstrap/dist/js/bootstrap.bundle.min.js public/assets/js/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MartinPereiraP/proyecto-login-aiep.git"
   },
   "keywords": [
     "php",

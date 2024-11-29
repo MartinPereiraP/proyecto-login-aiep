@@ -19,6 +19,8 @@
 |       └-- Traits/
 ├-- config/
 |       └-- database.php
+├-- public/
+|       └-- index.php
 ├-- .gitignore
 ├-- composer.json
 ├-- package.json
