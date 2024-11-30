@@ -9,6 +9,10 @@
 - crear login y validaciones
 - en el nav se debe crear un boton login y register a la derecha del nav tarea para el sabado
 - cambiar datos al navbar
+
+Tarea Sabado 30-11
+
+- crear formulario register
   
 ```php
 ├-- app/

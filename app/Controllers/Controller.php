@@ -57,4 +57,38 @@ class Controller
         // Termina la ejecución del script.
         exit;
     }
+
+    // Sanitiza y valida los datos de un formulario.
+    public function validate(array $data, array $rules): array
+    {
+        $errors = [];
+
+        foreach ($rules as $field => $fieldRules) {
+            foreach ($fieldRules as $rule) {
+                if ($rule === 'required' && empty($data[$field])) {
+                    $errors[$field] = 'Este campo es obligatorio.';
+                }
+            }
+        }
+
+        return $errors;
+    }
+
+    // Sanitiza tags HTML y caracteres especiales de una cadena.
+    public function sanitize(string $string): string
+    {
+        return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
+    }
+
+    // Encriptar una contraseña.
+    public function hashPassword(string $password): string
+    {
+        return password_hash($password, PASSWORD_DEFAULT);
+    }
+
+    // Verificar Usuario
+    public function verifyUser($usuario, $password): bool
+    {
+        return $usuario && $usuario['password'] && password_verify($password, $usuario['password']);
+    }
 }
