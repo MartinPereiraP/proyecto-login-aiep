@@ -18,11 +18,4 @@ Route::get('admin/dashboard',                 [App\Controllers\Admin\DashboardCo
 // Route::put('admin/users/:id',                 [App\Controllers\Admin\UserController::class, 'update']);
 // Route::delete('admin/users/:id',              [App\Controllers\Admin\UserController::class, 'destroy']);
 
-// Route::resource('admin/users', App\Http\Controllers\Admin\UserController::class);
-
-// Rutas de Errores
-// Route::get('errors/404', [App\Http\Controllers\Errors\ErrorController::class, 'error404']);
-// Route::get('errors/405', [App\Http\Controllers\Errors\ErrorController::class, 'error405']);
-// Route::get('errors/500', [App\Http\Controllers\Errors\ErrorController::class, 'error500']);
-
 Route::dispatch();

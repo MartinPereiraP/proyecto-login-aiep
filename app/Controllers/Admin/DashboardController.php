@@ -11,7 +11,7 @@ class DashboardController extends Controller
     /**
      * El modelo de contacto utilizado por este controlador.
      */
-    private $contactModel;
+    private $userModel;
 
     /**
      * Crea una nueva instancia de ContactController.
@@ -19,13 +19,13 @@ class DashboardController extends Controller
     public function __construct()
     {
         // Inicializa el modelo de contacto.
-        $this->contactModel = new Usuario();
+        $this->userModel = new Usuario();
     }
-
 
     public function index()
     {
-        $usuarios = $this->contactModel->all();
+        // Obtiene todos los users.
+        $usuarios = $this->userModel->paginate(3);
 
         return $usuarios;
 

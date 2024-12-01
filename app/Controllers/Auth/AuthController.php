@@ -56,8 +56,6 @@ class AuthController extends Controller
         }
     }
 
-
-
     public function logout()
     {
         // Cerrar la sesión (eliminar $_SESSION)

@@ -18,6 +18,6 @@ define('BASE_PATH', dirname(__DIR__)); // Define la ruta base del proyecto
 // Cargar el autoload de Composer para cargar automáticamente todas las clases
 require_once BASE_PATH . '/vendor/autoload.php';
 // Cargar el autoload de Composer para cargar automáticamente todas las clases.
-require_once __DIR__ . '/../config/app.php';
+require_once __DIR__ . '/../bootstrap/app.php';
 // Cargar el archivo de rutas
 require_once __DIR__ . '/../routes/web.php';

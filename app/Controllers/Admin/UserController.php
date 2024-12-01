@@ -41,12 +41,19 @@ class UserController extends Controller
 
     public function store()
     {
-        return 'Almacenar usuario';
+        $usuario = $this->userModel->create([
+            'nombre' => $_POST['nombre'],
+            'correo' => $_POST['correo'],
+            'password' => password_hash('password', PASSWORD_BCRYPT),
+        ]);
     }
 
     public function show($id)
     {
+        // Buscar un usuario por ID
+        $usuario = $this->userModel->find($id);
 
+        return $usuario;
         return 'Mostrar usuario con ID: ' . $id;
     }
 
