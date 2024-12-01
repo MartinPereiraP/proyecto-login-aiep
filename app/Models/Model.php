@@ -8,8 +8,10 @@ use PDOException;
 
 class Model
 {
-    protected $connection; // Objeto PDO de la conexión a la base de datos.
+    protected $connection; // Objeto PDO para la conexión a la base de datos.
+    protected $query;      // Última consulta ejecutada.
     protected $table;      // Nombre de la tabla asociada al modelo.
+    protected $orderBy = ''; // Cláusula ORDER BY opcional.
 
     public function __construct()
     {
@@ -17,52 +19,50 @@ class Model
     }
 
     /**
-     * Crea una nueva conexión a la base de datos utilizando PDO.
+     * Crea una conexión a la base de datos utilizando PDO.
      *
      * @throws Exception si la conexión a la base de datos falla.
-     * @return PDO el objeto PDO de la conexión a la base de datos.
+     * @return PDO El objeto PDO para la conexión.
      */
     private function createConnection()
     {
+        // Cargar la configuración de la base de datos
         $config = require __DIR__ . '/../../config/database.php';
+
+        // Construir DSN
         $dsn = "{$config['driver']}:host={$config['host']};dbname={$config['database']};charset={$config['charset']}";
 
         try {
             $connection = new PDO($dsn, $config['username'], $config['password']);
             $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             return $connection;
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
             throw new Exception('Error de conexión: ' . $e->getMessage());
         }
     }
 
     /**
-     * Ejecuta una consulta en la base de datos.
+     * Ejecuta una consulta SQL en la base de datos.
      *
-     * @param string $sql La consulta SQL a ejecutar.
+     * @param string $sql Consulta SQL.
+     * @param array $data Parámetros de la consulta preparada.
+     * @return $this Retorna la instancia actual para encadenamiento.
      */
-    public function query($sql, $data = [], $params = null)
+    public function query($sql, $data = [])
     {
-        if ($data) {
-            if ($params === null) {
-                $params = str_repeat('s', count($data));
-            }
-
-            $stmt = $this->connection->prepare($sql);
-            $stmt->bind_param($params, ...$data);
-            $stmt->execute();
-            $this->query = $stmt->get_result();
-        } else {
-            $this->query = $this->connection->query($sql);
-        }
-
+        $stmt = $this->connection->prepare($sql);
+        $stmt->execute($data);
+        $this->query = $stmt;
         return $this;
     }
 
     /**
-     * Ejecuta una consulta SELECT en la base de datos.
+     * Ejecuta una consulta SELECT con condiciones.
      *
-     * @param string $column La columna a buscar.
+     * @param string $column Nombre de la columna para la condición.
+     * @param string $operator Operador de comparación.
+     * @param mixed $value Valor para la comparación.
+     * @return $this Retorna la instancia actual para encadenamiento.
      */
     public function where($column, $operator, $value = null)
     {
@@ -78,175 +78,136 @@ class Model
     }
 
     /**
-     * Ordena los resultados de la consulta.
+     * Devuelve el primer registro de la consulta.
      *
-     * @param string $column La columna a ordenar.
-     */
-    public function orderBy($column, $direction = 'ASC')
-    {
-        $this->orderBy = "ORDER BY {$column} {$direction}";
-        return $this;
-    }
-
-    /**
-     * Devuelve el primer resultado de la consulta.
-     *
-     * @return array
+     * @return array|null
      */
     public function first()
     {
-        // Retorna un array asociativo que representa la primera fila de los resultados de la consulta SQL.
-        return $this->query->fetch_assoc();
+        return $this->query->fetch(PDO::FETCH_ASSOC);
     }
 
     /**
-     * Devuelve todos los resultados de la consulta, pero puede filtrarlos
+     * Devuelve todos los registros de la consulta.
      *
      * @return array
      */
     public function get()
     {
-        // Retorna un array de arrays asociativos que representa todas las filas de los resultados de la consulta SQL.
-        return $this->query->fetch_all(MYSQLI_ASSOC);
+        return $this->query->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
-     * Pagina los resultados de una consulta SQL.
-     *
-     * @param int $cant La cantidad de resultados por página. Por defecto es 15.
-     *
-     * @return array Retorna un array que contiene los datos paginados y la información de la paginación.
-     */
-    public function paginate($cant = 15)
-    {
-        // Obtiene la página actual de la URL o asume que es la página 1 si no se proporciona.
-        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
-
-        // Crea la consulta SQL para obtener los resultados de la página actual.
-        $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM {$this->table} LIMIT " . (($page - 1) * $cant) . ", {$cant}";
-
-        // Ejecuta la consulta SQL y obtiene los resultados.
-        $data = $this->query($sql)->get();
-
-        // Obtiene el total de resultados sin tener en cuenta la cláusula LIMIT.
-        $total = $this->query("SELECT FOUND_ROWS() as total")->first()['total'];
-
-        // Prepara la URL para los enlaces de paginación.
-        $uri = trim($_SERVER['REQUEST_URI'], '/');
-        if (strpos($uri, '?')) {
-            $uri = substr($uri, 0, strpos($uri, '?'));
-        }
-
-        // Calcula la última página.
-        $last_page = ceil($total / $cant);
-
-        // Retorna los datos paginados y la información de la paginación.
-        return [
-            'total' => $total,
-            'from' => (($page - 1) * $cant) + 1,
-            'to' => (($page - 1) * $cant) + count($data),
-            'current_page' => $page,
-            'last_page' => $last_page,
-            'prev_page_url' => $page > 1 ? '/' . $uri . '?page=' . ($page - 1) : null,
-            'next_page_url' => $page < $last_page ? '/' . $uri . '?page=' . ($page + 1) : null,
-            'data' => $data,
-        ];
-    }
-
-    /**
-     * Devuelve todos los resultados de la consulta.
+     * Devuelve todos los registros de la tabla.
      *
      * @return array
      */
     public function all()
     {
-        // Crea la consulta SQL para obtener todos los registros de la tabla.
         $sql = "SELECT * FROM {$this->table}";
-
-        // Ejecuta la consulta SQL y retorna los resultados.
         return $this->query($sql)->get();
     }
 
     /**
-     * Devuelve un resultado específico de la consulta.
+     * Busca un registro por su ID.
      *
-     * @param int $id El ID del resultado a buscar.
+     * @param int $id ID del registro.
+     * @return array|null
      */
     public function find($id)
     {
-        // Crea la consulta SQL para obtener el registro con el ID especificado.
         $sql = "SELECT * FROM {$this->table} WHERE id = ?";
+        return $this->query($sql, [$id])->first();
+    }
 
-        // Ejecuta la consulta SQL y retorna el resultado.
-        return $this->query($sql, [$id], 'i')->first();
+    public function paginate($perPage = 15)
+    {
+        // Obtener la página actual desde los parámetros de la URL
+        $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+
+        // Calcular el desplazamiento
+        $offset = ($currentPage - 1) * $perPage;
+
+        // Consulta para obtener los datos paginados
+        $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM {$this->table} {$this->orderBy} LIMIT :offset, :perPage";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->bindValue(':perPage', $perPage, PDO::PARAM_INT);
+        $stmt->execute();
+        $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Obtener el número total de registros
+        $totalStmt = $this->connection->query("SELECT FOUND_ROWS()");
+        $total = (int) $totalStmt->fetchColumn();
+
+        // Calcular el total de páginas
+        $totalPages = (int) ceil($total / $perPage);
+
+        // Construir la URL base para los enlaces de paginación
+        $uri = strtok($_SERVER['REQUEST_URI'], '?');
+        $queryParams = $_GET;
+        unset($queryParams['page']);
+        $baseQuery = http_build_query($queryParams);
+        $baseUrl = $uri . ($baseQuery ? '?' . $baseQuery . '&' : '?');
+
+        // Generar los datos de la paginación
+        return [
+            'total' => $total,
+            'per_page' => $perPage,
+            'current_page' => $currentPage,
+            'last_page' => $totalPages,
+            'from' => $offset + 1,
+            'to' => min($offset + $perPage, $total),
+            'prev_page_url' => $currentPage > 1 ? "{$baseUrl}page=" . ($currentPage - 1) : null,
+            'next_page_url' => $currentPage < $totalPages ? "{$baseUrl}page=" . ($currentPage + 1) : null,
+            'data' => $data,
+        ];
     }
 
     /**
-     * Crea un nuevo registro en la base de datos.
+     * Crea un nuevo registro en la tabla.
      *
-     * @param array $data Los datos a insertar.
+     * @param array $data Datos del nuevo registro.
+     * @return array|null Registro recién creado.
      */
     public function create($data)
     {
-        // Obtiene los nombres de las columnas de los datos y los une en una cadena.
-        $columns = array_keys($data);
-        $columns = implode(', ', $columns);
+        $columns = implode(', ', array_keys($data));
+        $placeholders = implode(', ', array_fill(0, count($data), '?'));
 
-        // Obtiene los valores de los datos.
-        $values = array_values($data);
+        $sql = "INSERT INTO {$this->table} ({$columns}) VALUES ({$placeholders})";
+        $this->query($sql, array_values($data));
 
-        // Crea la consulta SQL para insertar el nuevo registro.
-        $sql = "INSERT INTO {$this->table} ({$columns}) VALUES (" . str_repeat('?, ', count($values) - 1) . " ?)";
-
-        // Ejecuta la consulta SQL.
-        $this->query($sql, $values);
-
-        // Obtiene el ID del nuevo registro.
-        $insert_id = $this->connection->insert_id;
-
-        // Retorna el nuevo registro.
-        return $this->find($insert_id);
+        return $this->find($this->connection->lastInsertId());
     }
 
     /**
-     * Actualiza un registro en la base de datos.
+     * Actualiza un registro en la tabla.
      *
-     * @param int $id El ID del registro a actualizar.
+     * @param int $id ID del registro a actualizar.
+     * @param array $data Datos a actualizar.
+     * @return array|null Registro actualizado.
      */
     public function update($id, $data)
     {
-        // Prepara los campos y los valores para la consulta SQL.
-        $fields = [];
-        foreach ($data as $key => $value) {
-            $fields[] = "{$key} = ?";
-        }
-        $fields = implode(', ', $fields);
+        $fields = implode(', ', array_map(fn($key) => "{$key} = ?", array_keys($data)));
 
-        // Crea la consulta SQL para actualizar el registro.
         $sql = "UPDATE {$this->table} SET {$fields} WHERE id = ?";
+        $this->query($sql, [...array_values($data), $id]);
 
-        // Prepara los valores para la consulta SQL.
-        $values = array_values($data);
-        $values[] = $id;
-
-        // Ejecuta la consulta SQL.
-        $this->query($sql, $values);
-
-        // Retorna el registro actualizado.
         return $this->find($id);
     }
 
     /**
-     * Elimina un registro de la base de datos.
+     * Elimina un registro de la tabla.
      *
-     * @param int $id El ID del registro a eliminar.
+     * @param int $id ID del registro.
+     * @return bool Indica si la operación fue exitosa.
      */
     public function delete($id)
     {
-        // Crea la consulta SQL para eliminar el registro con el ID especificado.
         $sql = "DELETE FROM {$this->table} WHERE id = ?";
-
-        // Ejecuta la consulta SQL y retorna la propia instancia de la clase para permitir encadenamiento de métodos.
-        return $this->query($sql, [$id], 'i');
+        $this->query($sql, [$id]);
+        return $this->query->rowCount() > 0;
     }
 }
