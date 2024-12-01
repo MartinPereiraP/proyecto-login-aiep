@@ -4,7 +4,7 @@
     <div class="container mx-6">
         <div class="row d-flex justify-content-center align-items-center">
             <div class="col-4">
-                <form action="/auth/authenticate" method="post">
+                <form action="/auth/login" method="post">
                     <div class="card">
                         <header class="card-header bg-dark d-flex justify-content-center align-items-center">
                             <img class="mb-4" src="<?php include \BASE_PATH . '/public'; ?>/assets/img/aiep-branding.svg" alt="" width="auto" height="50">

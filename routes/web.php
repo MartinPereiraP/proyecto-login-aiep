@@ -1,12 +1,12 @@
 <?php
+// routes/web.php
 
 use App\Providers\RouteProvider as Route;
 
 Route::get('/', [App\Controllers\Frontend\HomeController::class, 'index']);
-Route::get('/auth/login', [App\Controllers\Auth\AuthController::class, 'login']);
-Route::post('/auth/authenticate', [App\Controllers\Auth\AuthController::class, 'authenticate']);
-Route::get('/auth/logout', [App\Controllers\Auth\AuthController::class, 'logout']);
-Route::get('/auth/register', [App\Controllers\Auth\AuthController::class, 'register']);
+
+// Incluid atrchivo auth.php con las rutas de autenticación
+require_once 'auth.php';
 
 // ADMIN ROUTES
 Route::get('admin/dashboard',                 [App\Controllers\Admin\DashboardController::class, 'index']);
