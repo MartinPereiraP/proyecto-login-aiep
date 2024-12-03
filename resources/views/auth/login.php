@@ -1,14 +1,16 @@
+<!-- resources/views/auth/login.php -->
 <?php include \BASE_PATH . '/resources/views/layouts/auth/header.php'; ?>
 
 <main class="form-signin w-100 m-auto">
     <div class="container mx-6">
         <div class="row d-flex justify-content-center align-items-center">
             <div class="col-4">
-                <form action="/auth/login" method="post">
+                <form action="/auth/authenticate" method="post">
                     <div class="card">
                         <header class="card-header bg-dark d-flex justify-content-center align-items-center">
                             <img class="mb-4" src="<?php include \BASE_PATH . '/public'; ?>/assets/img/aiep-branding.svg" alt="" width="auto" height="50">
                         </header>
+
                         <div class="card-body">
 
                             <h1 class="h3 mb-3 fw-normal d-flex justify-content-center">Login</h1>
@@ -30,6 +32,7 @@
                             </div> -->
 
                         </div>
+
                         <footer class="card-footer d-flex justify-content-between">
                             <a href="/auth/register" class="btn btn-link">Register</a>
                             <button class="btn btn-primary py-2" type="submit">Login</button>
