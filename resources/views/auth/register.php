@@ -4,7 +4,7 @@
     <div class="container mx-6">
         <div class="row d-flex justify-content-center align-items-center">
             <div class="col-4">
-                <form>
+                <form action="/auth/register" method="post">
                     <div class="card">
                         <header class="card-header bg-dark d-flex justify-content-center align-items-center">
                             <img class="mb-4" src="<?php include \BASE_PATH . '/public'; ?>/assets/img/aiep-branding.svg" alt="" width="auto" height="50">
@@ -15,22 +15,22 @@
 
                             <div class="form-floating mb-3">
                                 <label for="name">Nombre</label>
-                                <input type="text" class="form-control" id="name" placeholder="Ingrese su nombre">
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Ingrese su nombre" required>
                             </div>
 
                             <div class="form-floating mb-3">
                                 <label for="email">Correo Electrónico</label>
-                                <input type="email" class="form-control" id="email" placeholder="Ingrese su correo electrónico">
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Ingrese su correo electrónico" required>
                             </div>
 
                             <div class="form-floating mb-3">
                                 <label for="password">Contraseña</label>
-                                <input type="password" class="form-control" id="password" placeholder="Ingrese su contraseña">
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Ingrese su contraseña" minlength="8" required>
                             </div>
 
                             <div class="form-floating mb-3">
                                 <label for="password_confirmation">Confirmar Contraseña</label>
-                                <input type="password" class="form-control" id="password_confirmation" placeholder="Confirme su contraseña">
+                                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Confirme su contraseña" required>
                             </div>
 
                         </div>
