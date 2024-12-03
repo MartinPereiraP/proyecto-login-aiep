@@ -3,7 +3,7 @@
 namespace App\Controllers\Admin;
 
 use App\Controllers\Controller;
-use App\Models\Usuario;
+use App\Models\User;
 
 class DashboardController extends Controller
 {
@@ -19,18 +19,18 @@ class DashboardController extends Controller
     public function __construct()
     {
         // Inicializa el modelo de contacto.
-        $this->userModel = new Usuario();
+        $this->userModel = new User();
     }
 
     public function index()
     {
         // Obtiene todos los users.
-        $usuarios = $this->userModel->paginate(3);
+        $users = $this->userModel->paginate(3);
 
-        return $usuarios;
+        return $users;
 
         return $this->view('admin.index', [
             'title' => 'Dashboard'
-        ], compact('usuarios'));
+        ], compact('users'));
     }
 }

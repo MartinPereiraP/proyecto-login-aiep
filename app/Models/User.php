@@ -13,12 +13,14 @@ class User extends Model
      * @var string
      */
     protected $table = 'users';
+    protected $logger;
 
     /**
      * Metodos privados
      *
      * @var string
      */
+    private $name;
     private $email;
     private $password;
 
@@ -30,7 +32,7 @@ class User extends Model
      */
     public function findByEmail($email)
     {
-        $sql = "SELECT * FROM {$this->table} WHERE correo = :email LIMIT 1";
+        $sql = "SELECT * FROM {$this->table} WHERE email = :email LIMIT 1";
         $stmt = $this->connection->prepare($sql);
         $stmt->bindParam(':email', $email);
         $stmt->execute();
@@ -46,8 +48,9 @@ class User extends Model
      */
     public function save()
     {
-        $sql = "INSERT INTO {$this->table} (email, password) VALUES (:email, :password)";
+        $sql = "INSERT INTO {$this->table} (name, email, password) VALUES (:name, :email, :password)";
         $stmt = $this->connection->prepare($sql);
+        $stmt->bindParam(':name', $this->name);
         $stmt->bindParam(':email', $this->email);
         $stmt->bindParam(':password', $this->password);
 
@@ -56,13 +59,18 @@ class User extends Model
         }
     }
 
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
     public function setEmail($email)
     {
         $this->email = $email;
     }
 
-    public function setPassword($password)
+    public function setPassword($hashedPassword)
     {
-        $this->password = password_hash($password, PASSWORD_BCRYPT);
+        $this->password = $hashedPassword;
     }
 }

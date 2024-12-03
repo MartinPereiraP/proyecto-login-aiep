@@ -4,16 +4,22 @@
 
 ## [GitHub](https://github.com/MartinPereiraP/proyecto-login-aiep.git)
 
+### Tarea
+
 - Conectar a la base de datos usna
 - usar github
 - crear login y validaciones
 - en el nav se debe crear un boton login y register a la derecha del nav tarea para el sabado
 - cambiar datos al navbar
 
-Tarea Sabado 30-11
+### Tarea Sabado 30-11
 
 - crear formulario register
   
+### Tarea Lunes 2 diciembre 2024
+
+- 
+
 ```php
 ├-- app/
 |       ├-- Controllers/
